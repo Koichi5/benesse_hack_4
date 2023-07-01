@@ -13,8 +13,14 @@ class _InitialPageState extends State<InitialPage> {
   List<SwipeItem> _swipeItems = [];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
-  List<Map <String, int>> questionList = [];
+  // List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
+  // key: 質問内容, value: 質問内容が属する属性のインデックス
+  Map <String, int> _questionList = {
+    "質問1":  1,
+    "質問2": 2,
+    "質問3":  1,
+    "質問4": 3,
+  };
   List<Color> _colors = [
     Colors.red,
     Colors.blue,
@@ -25,30 +31,32 @@ class _InitialPageState extends State<InitialPage> {
 
   @override
   void initState() {
-    for (int i = 0; i < _names.length; i++) {
+    var colorIndex = 0;
+    for (String key in _questionList.keys) {
       _swipeItems.add(SwipeItem(
-          content: Content(text: _names[i], color: _colors[i]),
+          content: Content(text: key, color: _colors[colorIndex]),
           likeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked ${_names[i]}"),
+              content: Text("Liked $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
           },
           nopeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope ${_names[i]}"),
+              content: Text("Nope $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
           },
           superlikeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked ${_names[i]}"),
+              content: Text("Superliked $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
           },
           onSlideUpdate: (SlideRegion? region) async {
             print("Region $region");
           }));
+      colorIndex + 1;
     }
 
     _matchEngine = MatchEngine(swipeItems: _swipeItems);
@@ -124,26 +132,3 @@ class Content {
 
   Content({required this.text, required this.color});
 }
-
-
-// class InitialPage extends StatefulWidget {
-//   InitialPage({Key? key}) : super(key: key);
-//
-//   final List<SwipeItem> _swipeItems = [];
-//   late MatchEngine _matchEngine;
-//   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-//   List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
-//   List<Color> _colors = [
-//     Colors.red,
-//     Colors.blue,
-//     Colors.green,
-//     Colors.yellow,
-//     Colors.orange
-//   ];
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(title: const Text("initial page")),
-//     );
-//   }
-// }
