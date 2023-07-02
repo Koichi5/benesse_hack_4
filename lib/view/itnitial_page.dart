@@ -1,4 +1,5 @@
 import 'package:benesse_hack/result.dart';
+import 'package:benesse_hack/view/result_view.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
@@ -13,7 +14,9 @@ class InitialPage extends StatefulWidget {
 }
 
 class _InitialPageState extends State<InitialPage> {
+  bool _isResultButtonShowed = false;
   List<SwipeItem> _swipeItems = [];
+  // 論理的思考力、継続力、チャレンジ精神、協調性、計画力、主体性
   List<int> vector = [0, 0, 0, 0, 0];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
@@ -40,18 +43,22 @@ class _InitialPageState extends State<InitialPage> {
       _swipeItems.add(SwipeItem(
           content: Content(text: key, color: _colors[colorIndex]),
           likeAction: () {
+            setState(() {
+              vector = swipe(true, _questionList[key]!, vector);
+            });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Liked $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
-            vector = swipe(true, _questionList[key]!, vector);
           },
           nopeAction: () {
+            setState(() {
+              vector = swipe(false, _questionList[key]!, []);
+            });
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Nope $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
-            vector = swipe(false, _questionList[key]!, []);
           },
           // superlikeAction: () {
           //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -98,6 +105,9 @@ class _InitialPageState extends State<InitialPage> {
                       content: Text("Stack Finished"),
                       duration: Duration(milliseconds: 500),
                     ));
+                    setState(() {
+                      _isResultButtonShowed = true;
+                    });
                   //  printresult
                   //  結果を表示する
                   //  結果表示ページ
@@ -113,27 +123,37 @@ class _InitialPageState extends State<InitialPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        // _matchEngine.currentItem.decision
-                        print("Nope");
-                      },
-                      child: Text("Nope")),
+                  Text("いいえ"),
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       // _matchEngine.currentItem.decision
+                  //       print("Nope");
+                  //     },
+                  //     child: Text("Nope")),
                   // ElevatedButton(
                   //     onPressed: () {
                   //       // _matchEngine.currentItem.superLike();
                   //       print("SuperLike");
                   //     },
                   //     child: Text("Superlike")),
-                  ElevatedButton(
-                      onPressed: () {
-                        // _matchEngine.currentItem.like();
-                        print("Like");
-                      },
-                      child: Text("Like"))
+                  // ElevatedButton(
+                  //     onPressed: () {
+                  //       // _matchEngine.currentItem.like();
+                  //       print("Like");
+                  //     },
+                  //     child: Text("Like"))
+                  Text("はい")
                 ],
-              )
-            ])));
+              ),
+              _isResultButtonShowed
+                  ? ElevatedButton(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ResultView(vector: vector, occupationList: ["消防士", "警察官", "弁護士", "検察官"])));
+              }, child: const Text("結果を見る"))
+                  : SizedBox()
+            ]
+            )
+        )
+    );
   }
 }
 
