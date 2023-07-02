@@ -9,7 +9,7 @@ class RadarChart extends StatelessWidget {
   Widget build(BuildContext context) {
     // final List<int> vector;
     return CustomPaint(
-      size: Size(double.infinity, double.infinity),
+      size: Size(MediaQuery.of(context).size.height* 0.4, MediaQuery.of(context).size.height* 0.4),
       painter: RadarChartPainter(vector: vector),
     );
   }

@@ -15,25 +15,30 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   bool _isResultButtonShowed = false;
+  List<String> occupationList = [];
   List<SwipeItem> _swipeItems = [];
   // 論理的思考力、継続力、チャレンジ精神、協調性、計画力、主体性
-  List<int> vector = [0, 0, 0, 0, 0];
+  List<int> vector = [0, 0, 0, 0, 0, 0];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   // List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
   // key: 質問内容, value: 質問内容が属する属性のインデックス
-  Map <String, int> _questionList = {
-    "質問1":  1,
-    "質問2": 2,
-    "質問3":  1,
-    "質問4": 3,
+  Map <String, List<int>> _questionList = {
+    "数学や理科の問題を考えることが好き":  [0,2],
+    "「なぜそうなるのか？」を考えるのが好き": [0,5],
+    "学校や習い事をあまり休まない":  [1,3],
+    "一度始めたことは根気よく続けられる": [1, 4],
+    "出来るかどうか分からないことでもとりあえずやってみる": [2, 5],
+    "期間限定商品を試してみる": [2, 3],
+    "班行動や部活動などみんなと協力して何かをするのが好きだ": [3,4],
+    "あいさつやお礼をしっかり言える": [1, 3],
+    "夏休みの宿題を余裕をもって終わらせられる": [1, 4],
+    "友達と遊びに行くとき、家を出る時間を考えることができる": [0, 4],
+    "洋服や持ち物は自分で選びたい": [0, 5],
+    "学校行事などで当事者意識をもって行動できる": [2, 5],
   };
   List<Color> _colors = [
-    Colors.red,
-    Colors.blue,
-    Colors.green,
-    Colors.yellow,
-    Colors.orange
+    Colors.red[100]!,
   ];
 
   @override
@@ -44,21 +49,23 @@ class _InitialPageState extends State<InitialPage> {
           content: Content(text: key, color: _colors[colorIndex]),
           likeAction: () {
             setState(() {
-              vector = swipe(true, _questionList[key]!, vector);
+              vector = swipe(true, [_questionList[key]!.first, _questionList[key]!.last,], vector);
+              print(vector);
             });
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Liked $key and index is ${_questionList[key]}"),
-              duration: Duration(milliseconds: 500),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: Text("Liked $key and index is ${_questionList[key]}"),
+            //   duration: Duration(milliseconds: 500),
+            // ));
           },
           nopeAction: () {
             setState(() {
-              vector = swipe(false, _questionList[key]!, []);
+              vector = swipe(false, [_questionList[key]!.first, _questionList[key]!.last,], vector);
+              print(vector);
             });
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Nope $key and index is ${_questionList[key]}"),
-              duration: Duration(milliseconds: 500),
-            ));
+            // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //   content: Text("Nope $key and index is ${_questionList[key]}"),
+            //   duration: Duration(milliseconds: 500),
+            // ));
           },
           // superlikeAction: () {
           //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -82,76 +89,71 @@ class _InitialPageState extends State<InitialPage> {
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          title: Text("initial page"),
+          title: const Text("ホーム"),
         ),
         body: Container(
-            child: Column(children: [
-              Container(
-                height: 550,
-                child: SwipeCards(
-                  matchEngine: _matchEngine,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      alignment: Alignment.center,
-                      color: _swipeItems[index].content.color,
-                      child: Text(
-                        _swipeItems[index].content.text,
-                        style: TextStyle(fontSize: 100),
-                      ),
-                    );
-                  },
-                  onStackFinished: () {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Stack Finished"),
-                      duration: Duration(milliseconds: 500),
-                    ));
-                    setState(() {
-                      _isResultButtonShowed = true;
-                    });
-                  //  printresult
-                  //  結果を表示する
-                  //  結果表示ページ
-                    print(printResult([1 ,0, 0, 0]));
-                  },
-                  itemChanged: (SwipeItem item, int index) {
-                    print("item: ${item.content.text}, index: $index");
-                  },
-                  upSwipeAllowed: true,
-                  fillSpace: true,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Stack(children: [
+                Container(
+                  height: 550,
+                  child: SwipeCards(
+                    matchEngine: _matchEngine,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        alignment: Alignment.center,
+                        color: _swipeItems[index].content.color,
+                        child: Text(
+                          _swipeItems[index].content.text,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                          ),
+                        ),
+                      );
+                    },
+                    onStackFinished: () {
+                      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      //   content: Text("Stack Finished"),
+                      //   duration: Duration(milliseconds: 500),
+                      // ));
+                      setState(() {
+                        occupationList = printResult(vector);
+                        _isResultButtonShowed = true;
+                      });
+                      print(printResult([1 ,0, 0, 0]));
+                    },
+                    itemChanged: (SwipeItem item, int index) {
+                      print("item: ${item.content.text}, index: $index");
+                    },
+                    upSwipeAllowed: true,
+                    fillSpace: true,
+                  ),
                 ),
+                Center(
+                  child: _isResultButtonShowed
+                      ? ElevatedButton(onPressed: (){
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => ResultView(
+                          //この verctor が変更されていなければ rederchart も表示されない
+                            vector: vector,
+                            occupationList: occupationList)
+                    )
+                    );
+                  }, child: const Text("結果を見る"))
+                      : SizedBox(),),
+              ]
               ),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Text("いいえ"),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       // _matchEngine.currentItem.decision
-                  //       print("Nope");
-                  //     },
-                  //     child: Text("Nope")),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       // _matchEngine.currentItem.superLike();
-                  //       print("SuperLike");
-                  //     },
-                  //     child: Text("Superlike")),
-                  // ElevatedButton(
-                  //     onPressed: () {
-                  //       // _matchEngine.currentItem.like();
-                  //       print("Like");
-                  //     },
-                  //     child: Text("Like"))
-                  Text("はい")
+                  Text("いいえ", style: TextStyle(fontSize: 20),),
+                  Text("はい", style: TextStyle(fontSize: 20),)
                 ],
               ),
-              _isResultButtonShowed
-                  ? ElevatedButton(onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => ResultView(vector: vector, occupationList: ["消防士", "警察官", "弁護士", "検察官"])));
-              }, child: const Text("結果を見る"))
-                  : SizedBox()
-            ]
-            )
+            ],
+          )
         )
     );
   }
