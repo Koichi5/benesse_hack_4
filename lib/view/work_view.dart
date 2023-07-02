@@ -10,14 +10,16 @@ class WorkView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("適正職業"),),
       body: Center(
-        child: Column(
-          children: [
-            Image.asset(
-                "assets/image/${work}.png"
-            ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.1,)
-          ],
+        child: SingleChildScrollView(
+          child:  Column(
+        children: [
+        Image.asset(
+        "assets/image/${work}.png"
         ),
+        SizedBox(height: MediaQuery.of(context).size.height * 0.1,)
+        ],
+      ),
+        )
         // child: Image.asset("assets/image/${work}.png"),
       )
     );
