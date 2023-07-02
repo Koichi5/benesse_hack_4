@@ -1,10 +1,10 @@
-import 'package:flutter/cupertino.dart';
-
-List<int> swipe(bool isTrue, int index, List<int> prevData) {
+List<int> swipe(bool isTrue, List<int> index, List<int> prevData) {
   var personalData = prevData;
   if (isTrue) {
-    personalData[index] += 1;
-    print("${isTrue}, $index, $prevData");
+    for (int i = 0; i < index.length; i++) {
+      personalData[index[i]] += 1;
+      print("${isTrue}, $index, $prevData");
+    }
   }
   return personalData;
 }
