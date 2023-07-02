@@ -24,4 +24,5 @@ flutter:
   uses-material-design: true
   assets:
     - assets/image/
+    - assets/image/プログラマー.png
 
