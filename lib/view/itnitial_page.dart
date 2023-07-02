@@ -1,6 +1,9 @@
+import 'package:benesse_hack/result.dart';
 import 'package:flutter/material.dart';
 import 'package:swipe_cards/draggable_card.dart';
 import 'package:swipe_cards/swipe_cards.dart';
+
+import '../swipe.dart';
 
 class InitialPage extends StatefulWidget {
   const InitialPage({Key? key}) : super(key: key);
@@ -11,6 +14,7 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   List<SwipeItem> _swipeItems = [];
+  List<int> vector = [0, 0, 0, 0, 0];
   late MatchEngine _matchEngine;
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   // List<String> _names = ["Red", "Blue", "Green", "Yellow", "Orange"];
@@ -40,19 +44,22 @@ class _InitialPageState extends State<InitialPage> {
               content: Text("Liked $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
+            vector = swipe(true, _questionList[key]!, vector);
           },
           nopeAction: () {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Nope $key and index is ${_questionList[key]}"),
               duration: Duration(milliseconds: 500),
             ));
+            vector = swipe(false, _questionList[key]!, []);
           },
-          superlikeAction: () {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Superliked $key and index is ${_questionList[key]}"),
-              duration: Duration(milliseconds: 500),
-            ));
-          },
+          // superlikeAction: () {
+          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text("Superliked $key and index is ${_questionList[key]}"),
+          //     duration: Duration(milliseconds: 500),
+          //   ));
+          //   swipe(true, _questionList[key]!, []);
+          // },
           onSlideUpdate: (SlideRegion? region) async {
             print("Region $region");
           }));
@@ -91,6 +98,10 @@ class _InitialPageState extends State<InitialPage> {
                       content: Text("Stack Finished"),
                       duration: Duration(milliseconds: 500),
                     ));
+                  //  printresult
+                  //  結果を表示する
+                  //  結果表示ページ
+                    print(printResult([1 ,0, 0, 0]));
                   },
                   itemChanged: (SwipeItem item, int index) {
                     print("item: ${item.content.text}, index: $index");
